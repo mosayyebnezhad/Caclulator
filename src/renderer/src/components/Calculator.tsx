@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import { getOpFromNum } from '../utils';
 
 const Calculator = () => {
 
@@ -62,21 +63,10 @@ const Calculator = () => {
 
                         {Array.from({ length: 4 }, (_, i: number) => {
 
-                            let Op;
-                            switch (i) {
-                                case 0:
-                                    Op = "+"
-                                    break;
-                                case 1:
-                                    Op = "-"
-                                    break;
-                                case 2:
-                                    Op = "*"
-                                    break;
-                                case 3:
-                                    Op = "/"
-                                    break;
-                            }
+                          
+
+
+                            const Op = getOpFromNum(i)
                             return (
                                 <Fragment key={i}>
                                     <Operator handler={() => {

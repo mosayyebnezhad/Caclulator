@@ -1,4 +1,29 @@
+import { Fragment, useState } from "react";
+
 const Calculator = () => {
+
+    const [temparea, setTemparea] = useState<number>(0)
+    const [num1, setN1] = useState<number>(0)
+    const [num2, setN2] = useState<number>(0)
+
+
+
+    const ButtonsClick = (i: number) => {
+        console.log("buttons " + i)
+    }
+    const OperatorsClick = (op: string) => {
+        console.log("Operators " + op)
+    }
+
+
+
+
+
+
+
+
+    // top of here write main logic
+    // -----------------------------------------------------------------------
 
 
 
@@ -14,7 +39,7 @@ const Calculator = () => {
                         3*6
                     </h1>
                     <h1 className="text-5xl font-bold text-center">
-                        18
+                        {temparea}
                     </h1>
                 </div>
 
@@ -25,16 +50,43 @@ const Calculator = () => {
                     <div className=" flex w-8/12 flex-wrap justify-center gap-3 mt-16 mx-auto">
 
 
-                        <ShowNumber />
+                        <ShowNumber Runner={
+                            (i: number) => {
+
+                                ButtonsClick(i)
+                            }
+                        } />
 
                     </div>
                     <div className=" flex w-20  flex-wrap justify-center gap-3 mt-16 mx-auto">
 
+                        {Array.from({ length: 4 }, (_, i: number) => {
 
-                        <Operator op="+" />
-                        <Operator op="-" />
-                        <Operator op="*" />
-                        <Operator op="/" />
+                            let Op;
+                            switch (i) {
+                                case 0:
+                                    Op = "+"
+                                    break;
+                                case 1:
+                                    Op = "-"
+                                    break;
+                                case 2:
+                                    Op = "*"
+                                    break;
+                                case 3:
+                                    Op = "/"
+                                    break;
+                            }
+                            return (
+                                <Fragment key={i}>
+                                    <Operator handler={() => {
+
+                                        OperatorsClick(Op)
+
+                                    }} op={Op} />
+                                </Fragment>
+                            )
+                        })}
 
                     </div>
                 </div>
@@ -51,32 +103,48 @@ export default Calculator;
 
 
 
-const Number = ({ i }: { i: number }) => {
+const Number = ({ i, action }: { i: number, action: (i: number) => void }) => {
+
+
     return (
         <button
+            // onClick={action}
+            onClick={() => action(i)}
             className="w-[30%] hover:opacity-100 active:text-gray-700 flex justify-center items-center h-16 bg-black opacity-85 rounded-xl font-bold text-xl"
         >{i}</button>
     )
 }
 
-
-const Operator = ({ op }: { op: string }) => {
-    return (
-        <button
-            className="p-1 w-full hover:opacity-100 font-bold text-3xl flex justify-center items-center active:text-gray-700 bg-black opacity-85 rounded-2xl"
-        >{op}</button>
-    )
+interface Onclick {
+    Runner: (i: number) => void
 }
 
-const ShowNumber = () => {
+const ShowNumber = (prop: Onclick) => {
+    const { Runner } = prop
+    // Runner()
     return (
         <>
             {
                 Array.from({ length: 9 }, (_, i: number) => {
-                    return <Number i={i + 1} />
+                    return (
+                        <Fragment key={i}>
+                            <Number action={() => Runner(i + 1)} i={i + 1} />
+                        </Fragment>
+                    )
                 })
             }
-            <Number i={0} />
+            <Number action={() => Runner(0)} i={0} />
         </>
+    )
+}
+
+const Operator = ({ op, handler }: { op: string, handler: () => void }) => {
+
+
+    return (
+        <button
+            onClick={() => handler()}
+            className="p-1 w-full hover:opacity-100 font-bold text-3xl flex justify-center items-center active:text-gray-700 bg-black opacity-85 rounded-2xl"
+        >{op}</button>
     )
 }
